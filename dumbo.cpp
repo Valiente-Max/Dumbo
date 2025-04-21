@@ -3,8 +3,8 @@
 #include <NewPing.h>
 
 // Pin definitions for ultrasonic sensor (adjust as needed)
-#define TRIG_PIN A4
-#define ECHO_PIN A5
+#define TRIG_PIN A1
+#define ECHO_PIN A0
 #define MAX_DISTANCE 200
 
 #define MAX_SPEED 190          // Max speed for motors
@@ -18,7 +18,7 @@ AF_DCMotor motor2(2, MOTOR12_1KHZ); // Right motor
 AF_DCMotor motor3(3, MOTOR12_1KHZ);
 AF_DCMotor motor4(4, MOTOR12_1KHZ);
 
-Servo myservo; // Servo for sensor sweep
+Servo myservo;      // Servo for sensor sweep
 
 int leftDistance, rightDistance;
 int curDist = 0;
@@ -35,13 +35,13 @@ void setup() {
 void loop() {
   myservo.write(90);      // Look forward
   delay(90);
-  curDist = readPing();   // Read distance ahead
+  curDist = getDistance();   // Read distance ahead
 
   if (curDist < COLL_DIST) {
     changePath();         // If obstacle ahead, decide new path
   }
   moveForward();
-  delay(500);
+  delay(1000);
 }
 
 //--------------------------------------------- PATH DECISION -----------------------------------------------
@@ -49,12 +49,12 @@ void changePath() {
   moveStop();
   myservo.write(36);      // Look right
   delay(500);
-  rightDistance = readPing();
+  rightDistance = getDistance();
 
   delay(500);
   myservo.write(144);     // Look left
-  delay(700);
-  leftDistance = readPing();
+  delay(500);
+  leftDistance = getDistance();
 
   delay(500);
   myservo.write(90);      // Center servo
@@ -74,11 +74,15 @@ void compareDistance() {
 }
 
 //--------------------------------------------- SENSOR READING ----------------------------------------------
-int readPing() {
-  delay(70);
-  unsigned int uS = sonar.ping();
-  int cm = uS / US_ROUNDTRIP_CM;
-  return cm;
+int getDistance() {
+  digitalWrite(TRIG_PIN, LOW);
+  delayMicroseconds(2);
+  digitalWrite(TRIG_PIN, HIGH);
+  delayMicroseconds(10);
+  digitalWrite(TRIG_PIN, LOW);
+  long duration = pulseIn(ECHO_PIN, HIGH, 20000); // Timeout for safety
+  if (duration == 0) return 999; // No echo
+  return duration / 29 / 2; // Convert to cm
 }
 
 //--------------------------------------------- MOTOR CONTROL -----------------------------------------------
@@ -101,7 +105,7 @@ void moveForward() {
     motor2.setSpeed(speedSet + MAX_SPEED_OFFSET);
     motor3.setSpeed(speedSet + MAX_SPEED_OFFSET);
     motor4.setSpeed(speedSet + MAX_SPEED_OFFSET);
-    delay(10);
+    delay(5);
   }
 }
 
@@ -117,7 +121,7 @@ void moveBackward() {
     motor3.setSpeed(speedSet + MAX_SPEED_OFFSET);
     motor4.setSpeed(speedSet + MAX_SPEED_OFFSET);
 
-    delay(10);
+    delay(5);
   }
 }
 
@@ -126,8 +130,7 @@ void turnRight() {
   motor2.run(FORWARD);
   motor3.run(BACKWARD);
   motor4.run(BACKWARD);
-
-  delay(500);
+  delay(400);
   moveForward();
 }
 
@@ -136,7 +139,7 @@ void turnLeft() {
   motor2.run(BACKWARD);
   motor3.run(FORWARD);
   motor4.run(FORWARD);
-  delay(500);
+  delay(400);
   moveForward();
 }
 
@@ -145,7 +148,6 @@ void turnAround() {
   motor2.run(BACKWARD);
   motor3.run(FORWARD);
   motor4.run(BACKWARD);
-
-
-  delay(1000);
-    moveForward();}
+  delay(800);
+  moveForward();
+  }
