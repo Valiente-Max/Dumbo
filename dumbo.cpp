@@ -101,7 +101,7 @@ void moveForward() {
     motor2.setSpeed(speedSet + MAX_SPEED_OFFSET);
     motor3.setSpeed(speedSet + MAX_SPEED_OFFSET);
     motor4.setSpeed(speedSet + MAX_SPEED_OFFSET);
-    delay(5);
+    delay(10);
   }
 }
 
@@ -117,7 +117,7 @@ void moveBackward() {
     motor3.setSpeed(speedSet + MAX_SPEED_OFFSET);
     motor4.setSpeed(speedSet + MAX_SPEED_OFFSET);
 
-    delay(5);
+    delay(10);
   }
 }
 
@@ -127,7 +127,7 @@ void turnRight() {
   motor3.run(BACKWARD);
   motor4.run(BACKWARD);
 
-  delay(400);
+  delay(500);
   moveForward();
 }
 
@@ -136,16 +136,16 @@ void turnLeft() {
   motor2.run(BACKWARD);
   motor3.run(FORWARD);
   motor4.run(FORWARD);
-  delay(400);
+  delay(500);
   moveForward();
 }
 
 void turnAround() {
   motor1.run(FORWARD);
   motor2.run(BACKWARD);
-  motor3.run(FOR WARD);
+  motor3.run(FORWARD);
   motor4.run(BACKWARD);
 
 
-  delay(800);
+  delay(1000);
     moveForward();}
