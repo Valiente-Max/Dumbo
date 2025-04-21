@@ -28,7 +28,7 @@ int speedSet = 0;
 void setup() {
   myservo.attach(9);      // Servo on pin 9
   myservo.write(90);      // Center servo (forward)
-  delay(1000);
+  delay(500);
 }
 
 //--------------------------------------------- MAIN LOOP ---------------------------------------------------
